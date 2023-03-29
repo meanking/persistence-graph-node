@@ -77,3 +77,11 @@ Ex. For `v6.1.0` it is `v6.1.0-fh`
 
 Change the persistencecore image in `graph-node/firehose-node.yaml` file.  
 And run `kubectl apply`.
+
+
+```bash
+firecosmos start merger \
+  --common-first-streamable-block 10522616 \
+  --common-live-blocks-addr localhost:9000 \
+  --common-merged-blocks-store-url s3://dexter-zone.sgp1.digitaloceanspaces.com/merged-blocks?region=blr-1
+```

@@ -1,0 +1,33 @@
+# Dummy values. The actual values are set in the respective environment's configmap.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: persistencecore
+data:
+  chain.id: persistencecore
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: firehose-node-config
+data:
+  sync_node.resolution_method: DYNAMIC
+  sync_node.host: ''
+  sync_node.exposer_port: ''
+  sync_node.port_p2p: ''
+  sync_node.genesis_json_fetch_url: ''
+  snapshot_restore_url: ''
+  seeds: ''
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graph-node-config
+data:
+  firehose_node.host: 'firehose-node.testnet.svc.cluster.local'
+  firehose_node.port: '9030'
+  ipfs.host: 'ipfs.testnet.svc.cluster.local'
+  ipfs.port: '5001'

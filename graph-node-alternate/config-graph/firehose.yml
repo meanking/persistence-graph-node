@@ -1,0 +1,15 @@
+start:
+  args:
+    - reader
+    - merger
+    - relayer
+    - firehose
+  flags:
+    # Common flags
+    common-first-streamable-block: 0
+
+    # reader specific flags
+    reader-mode: node
+    reader-node-path: /usr/bin/persistenceCore
+    reader-node-args: start --x-crisis-skip-assert-invariants --home /persistencecore
+    reader-node-logs-filter: "module=(p2p|pex|consensus|x/bank|x/wasm)"

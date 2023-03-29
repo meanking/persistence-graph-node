@@ -1,0 +1,15 @@
+start:
+  args:
+    - reader
+  flags:
+    # Common flags
+    common-first-streamable-block: 0
+
+    # reader specific flags
+    reader-mode: node
+    reader-node-path: /usr/bin/persistenceCore
+    reader-node-args: start --x-crisis-skip-assert-invariants --home /persistencecore
+    reader-node-logs-filter: "module=(p2p|pex|consensus|x/bank|x/wasm)"
+
+    common-one-block-store-url: 's3://sgp1.digitaloceanspaces.com/dexter-zone/one-blocks?region=us-east-1'
+    common-merged-blocks-store-url: 's3://sgp1.digitaloceanspaces.com/dexter-zone/merged-blocks?region=us-east-1'

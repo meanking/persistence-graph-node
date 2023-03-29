@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: persistencecore-firehose-merger
+  labels:
+    app.kubernetes.io/name: persistencecore-firehose-merger
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: persistencecore-firehose-merger
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: persistencecore-firehose-merger
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: persistencecore
+      app.kubernetes.io/name: persistencecore-firehose-merger
+  template:
+    metadata:
+      annotations:
+        quality: release
+        role: api-gateway
+        sla: high
+        tier: gateway
+      labels:
+        app.kubernetes.io/instance: persistencecore
+        app.kubernetes.io/type: persistencecore-firehose-merger
+        app.kubernetes.io/name: persistencecore-firehose-merger
+        app.kubernetes.io/version: '0.1'
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: firehose-merger-node
+          image: betterpersist/firecosmos:0.6.0
+          imagePullPolicy: Always
+          env:
+            - name: FIRST_STREAMBLE_BLOCK
+              valueFrom:
+                configMapKeyRef:
+                  key: first_streamable_block
+                  name: firehose-node-config
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  key: aws_access_key_id
+                  name: firehose-node-aws-credentials
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: aws_secret_access_key
+                  name: firehose-node-aws-credentials
+          command:
+            - bash
+            - "-c"
+            - |
+              exec firecosmos start merger \
+                --common-live-blocks-addr persistencecore-firehose-reader.mainnet.svc.cluster.local:9010 \
+                --common-one-block-store-url s3://sgp1.digitaloceanspaces.com/dexter-zone/one-blocks?region=us-east-1 \
+                --common-merged-blocks-store-url s3://sgp1.digitaloceanspaces.com/dexter-zone/merged-blocks?region=us-east-1 \
+                --common-first-streamable-block $FIRST_STREAMBLE_BLOCK
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1G"
+            requests:
+              cpu: "1"
+              memory: "1G"
+      volumes:
+        - name: config-graph
+          configMap:
+            name: config-graph
+        - name: scripts-graph
+          configMap:
+            name: scripts-graph

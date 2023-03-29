@@ -16,7 +16,7 @@ data:
   sync_node.exposer_port: ''
   sync_node.port_p2p: '26656'
   sync_node.genesis_json_fetch_url: 'https://raw.githubusercontent.com/persistenceOne/networks/master/core-1/final_genesis.json'
-  snapshot_restore_url: 'https://files.audit.one/persistence/snapshot/data_height_10522614.tar.lz4'
+  snapshot_restore_url: 'https://dexter-zone.sgp1.digitaloceanspaces.com/persistence-snapshot/persistence_10727804.tar.lz4'
   # seeds: 'fbf0aa94b512902a249b246ed5763b50df9c0543@seed.core.persistence.one:26656,ade4d8bc8cbe014af6ebdf3cb7b1e9ad36f412c0@seeds.polkachu.com:15456,ebc272824924ea1a27ea3183dd0b9ba713494f83@persistence-mainnet-seed.autostake.com:26896'
   seeds: 'fbf0aa94b512902a249b246ed5763b50df9c0543@seed.core.persistence.one:26656'
   # For buffer time to sync the node
@@ -29,7 +29,7 @@ kind: ConfigMap
 metadata:
   name: graph-node-config
 data:
-  firehose_node.host: 'persistencecore-firehose-node.mainnet.svc.cluster.local'
+  firehose_node.host: 'persistencecore-firehose.mainnet.svc.cluster.local'
   firehose_node.port: '9030'
   ipfs.host: 'ipfs-node.mainnet.svc.cluster.local'
   ipfs.port: '5001'

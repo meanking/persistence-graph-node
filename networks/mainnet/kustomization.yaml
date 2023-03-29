@@ -2,5 +2,5 @@ namespace: mainnet
 
 resources:
   - ingress.yaml
-  - ../../graph-node
+  - ../../graph-node-alternate
   - configmap.yaml

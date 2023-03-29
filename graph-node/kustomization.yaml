@@ -1,10 +1,10 @@
 resources:
   - firehose-node.yaml
-  - graph-node.yaml
-  - ipfs-node.yaml
-  - hasura.yaml
-  - ipfs-persistent-volume.yaml
-  - firehose-persistent-volume.yaml
+  # - graph-node.yaml
+  # - ipfs-node.yaml
+  # - hasura.yaml
+  # - ipfs-persistent-volume.yaml
+  # - firehose-persistent-volume.yaml
 
 generatorOptions:
   disableNameSuffixHash: true

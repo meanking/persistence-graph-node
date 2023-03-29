@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipfs-node
+  labels:
+    app.kubernetes.io/name: ipfs-node
+spec:
+  clusterIP: None
+  ports:
+    - name: http
+      port: 5001
+      protocol: TCP
+      targetPort: 5001
+  selector:
+    app.kubernetes.io/name: ipfs-node
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipfs-node
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: persistencecore
+      app.kubernetes.io/name: ipfs-node
+  template:
+    metadata:
+      annotations:
+        quality: release
+        role: api-gateway
+        sla: high
+        tier: gateway
+      labels:
+        app.kubernetes.io/instance: persistencecore
+        app.kubernetes.io/type: ipfs-node
+        app.kubernetes.io/name: ipfs-node
+        app.kubernetes.io/version: '0.1'
+    spec:
+      volumes:
+        - name: ipfs-pv-storage
+          persistentVolumeClaim:
+            claimName: ipfs-pv-claim
+      containers:
+        - name: ipfs-node
+          image: ipfs/go-ipfs:v0.10.0
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: "500M"
+            requests:
+              cpu: "0.25"
+              memory: "250M"
+          volumeMounts:
+            - mountPath: /data/ipfs
+              name: ipfs-pv-storage
+---
