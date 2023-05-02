@@ -1,11 +1,11 @@
 resources:
-  - firehose-reader.yaml
-  - firehose-merger.yaml
-  - firehose-relayer.yaml
-  - firehose-firehose.yaml
+  # - firehose-reader.yaml
+  # - firehose-merger.yaml
+  # - firehose-relayer.yaml
+  # - firehose-firehose.yaml
   - graph-node.yaml
   - ipfs-node.yaml
-  - hasura.yaml
+  # - hasura.yaml
   - ipfs-persistent-volume.yaml
 
 generatorOptions:
@@ -16,8 +16,6 @@ configMapGenerator:
     files:
       - config-graph/firehose-node.json
       - config-graph/firehose-reader.yml
-      - config-graph/firehose-relayer.yml
-      - config-graph/firehose-merger.yml
       - config-graph/config.toml
       - config-graph/config-graph-node.toml
   - name: scripts-graph

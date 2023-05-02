@@ -19,15 +19,17 @@ data:
   snapshot_restore_url: ''
   seeds: ''
   # For buffer time to sync the node
-  first_streamable_block: '300'
+  first_streamable_block: '50'
   force_init: 'false'
+  one_block_store_url: 's3://sgp1.digitaloceanspaces.com/dexter-zone/devnet/one-blocks?region=us-east-1'
+  merged_blocks_store_url: 's3://sgp1.digitaloceanspaces.com/dexter-zone/devnet/merged-blocks?region=us-east-1'
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: graph-node-config
 data:
-  firehose_node.host: 'persistencecore-firehose-node.devnet.svc.cluster.local'
+  firehose_node.host: 'persistencecore-firehose.devnet.svc.cluster.local'
   firehose_node.port: '9030'
   ipfs.host: 'ipfs-node.devnet.svc.cluster.local'
   ipfs.port: '5001'

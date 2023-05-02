@@ -16,12 +16,12 @@ data:
   sync_node.exposer_port: ''
   sync_node.port_p2p: '26656'
   sync_node.genesis_json_fetch_url: 'https://raw.githubusercontent.com/persistenceOne/networks/master/core-1/final_genesis.json'
-  snapshot_restore_url: 'https://dexter-zone.sgp1.digitaloceanspaces.com/persistence-snapshot/persistence_10727804.tar.lz4'
-  # seeds: 'fbf0aa94b512902a249b246ed5763b50df9c0543@seed.core.persistence.one:26656,ade4d8bc8cbe014af6ebdf3cb7b1e9ad36f412c0@seeds.polkachu.com:15456,ebc272824924ea1a27ea3183dd0b9ba713494f83@persistence-mainnet-seed.autostake.com:26896'
-  seeds: 'fbf0aa94b512902a249b246ed5763b50df9c0543@seed.core.persistence.one:26656'
-  # For buffer time to sync the node
+  snapshot_restore_url: 'https://snapshots.polkachu.com/snapshots/persistence/persistence_11208915.tar.lz4'
+  seeds: 'fbf0aa94b512902a249b246ed5763b50df9c0543@seed.core.persistence.one:26656,646d0ad08c408f93276f90cd29d4e410e2d60f63@xprt.paranorm.pro:25656'
   first_streamable_block: '10522616'
   force_init: 'false'
+  one_block_store_url: 's3://sgp1.digitaloceanspaces.com/dexter-zone/one-blocks?region=us-east-1'
+  merged_blocks_store_url: 's3://sgp1.digitaloceanspaces.com/dexter-zone/merged-blocks?region=us-east-1'
 
 ---
 apiVersion: v1

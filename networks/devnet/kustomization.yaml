@@ -4,4 +4,4 @@ resources:
   - ../../base/persistencecore
   - ingress.yaml
   - configmap.yaml
-  - ../../graph-node
+  - ../../graph-node-alternate/overlays/one-pod

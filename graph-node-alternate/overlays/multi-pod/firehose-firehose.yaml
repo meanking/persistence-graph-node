@@ -2,25 +2,31 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: persistencecore-firehose-merger
+  name: persistencecore-firehose
   labels:
-    app.kubernetes.io/name: persistencecore-firehose-merger
+    app.kubernetes.io/name: persistencecore-firehose
 spec:
   clusterIP: None
+  ports:
+    - name: firehose
+      port: 9030
+      protocol: TCP
+      targetPort: 9030
   selector:
-    app.kubernetes.io/name: persistencecore-firehose-merger
+    app.kubernetes.io/name: persistencecore-firehose
+
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: persistencecore-firehose-merger
+  name: persistencecore-firehose
 spec:
   replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
       app.kubernetes.io/instance: persistencecore
-      app.kubernetes.io/name: persistencecore-firehose-merger
+      app.kubernetes.io/name: persistencecore-firehose
   template:
     metadata:
       annotations:
@@ -30,13 +36,13 @@ spec:
         tier: gateway
       labels:
         app.kubernetes.io/instance: persistencecore
-        app.kubernetes.io/type: persistencecore-firehose-merger
-        app.kubernetes.io/name: persistencecore-firehose-merger
+        app.kubernetes.io/type: persistencecore-firehose
+        app.kubernetes.io/name: persistencecore-firehose
         app.kubernetes.io/version: '0.1'
     spec:
       terminationGracePeriodSeconds: 10
       containers:
-        - name: firehose-merger-node
+        - name: firehose-node
           image: betterpersist/firecosmos:0.6.0
           imagePullPolicy: Always
           env:
@@ -55,15 +61,26 @@ spec:
                 secretKeyRef:
                   key: aws_secret_access_key
                   name: firehose-node-aws-credentials
+            - name: ONE_BLOCK_STORE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: one_block_store_url
+                  name: firehose-node-config
+            - name: MERGED_BLOCKS_STORE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: merged_blocks_store_url
+                  name: firehose-node-config
           command:
             - bash
             - "-c"
             - |
-              exec firecosmos start merger \
-                --common-live-blocks-addr persistencecore-firehose-reader.mainnet.svc.cluster.local:9010 \
-                --common-one-block-store-url s3://sgp1.digitaloceanspaces.com/dexter-zone/one-blocks?region=us-east-1 \
-                --common-merged-blocks-store-url s3://sgp1.digitaloceanspaces.com/dexter-zone/merged-blocks?region=us-east-1 \
-                --common-first-streamable-block $FIRST_STREAMBLE_BLOCK
+              export NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+              exec firecosmos start firehose \
+                --common-live-blocks-addr persistencecore-firehose-relayer.$NAMESPACE.svc.cluster.local:9010 \
+                --common-first-streamable-block $FIRST_STREAMBLE_BLOCK \
+                --common-one-block-store-url $ONE_BLOCKS_STORE_URL \
+                --common-merged-blocks-store-url $MERGED_BLOCKS_STORE_URL
           resources:
             limits:
               cpu: "1"

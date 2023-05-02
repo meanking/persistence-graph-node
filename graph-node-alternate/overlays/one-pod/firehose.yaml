@@ -2,31 +2,31 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: persistencecore-firehose-reader
+  name: persistencecore-firehose
   labels:
-    app.kubernetes.io/name: persistencecore-firehose-reader
+    app.kubernetes.io/name: persistencecore-firehose
 spec:
   clusterIP: None
   ports:
-    - name: firehose-reader
-      port: 9000
+    - name: firehose
+      port: 9030
       protocol: TCP
-      targetPort: 9000
+      targetPort: 9030
   selector:
-    app.kubernetes.io/name: persistencecore-firehose-reader
+    app.kubernetes.io/name: persistencecore-firehose
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: persistencecore-firehose-reader
+  name: persistencecore-firehose
 spec:
-  serviceName: persistencecore-firehose-reader
+  serviceName: persistencecore-firehose
   replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
       app.kubernetes.io/instance: persistencecore
-      app.kubernetes.io/name: persistencecore-firehose-reader
+      app.kubernetes.io/name: persistencecore-firehose
   template:
     metadata:
       annotations:
@@ -36,8 +36,8 @@ spec:
         tier: gateway
       labels:
         app.kubernetes.io/instance: persistencecore
-        app.kubernetes.io/type: persistencecore-firehose-reader
-        app.kubernetes.io/name: persistencecore-firehose-reader
+        app.kubernetes.io/type: persistencecore-firehose
+        app.kubernetes.io/name: persistencecore-firehose
         app.kubernetes.io/version: '0.1'
     spec:
       terminationGracePeriodSeconds: 10
@@ -185,12 +185,33 @@ spec:
                 secretKeyRef:
                   key: aws_secret_access_key
                   name: firehose-node-aws-credentials
+            - name: ONE_BLOCK_STORE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: one_block_store_url
+                  name: firehose-node-config
+            - name: MERGED_BLOCKS_STORE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: merged_blocks_store_url
+                  name: firehose-node-config
+            - name: FIRST_STREAMBLE_BLOCK
+              valueFrom:
+                configMapKeyRef:
+                  key: first_streamable_block
+                  name: firehose-node-config
           command:
             - bash
             - "-c"
             - |
-              exec /persistencecore/bin/firecosmos start \
-                --config /persistencecore/config/firehose.yml \
+              exec /persistencecore/bin/firecosmos start reader merger firehose \
+                --reader-mode node \
+                --reader-node-path /usr/bin/persistenceCore \
+                --reader-node-args "start --x-crisis-skip-assert-invariants --home /persistencecore" \
+                --reader-node-logs-filter "module=(p2p|pex|consensus|x/bank|x/wasm)" \
+                --common-first-streamable-block $FIRST_STREAMBLE_BLOCK \
+                --common-one-block-store-url "$ONE_BLOCK_STORE_URL" \
+                --common-merged-blocks-store-url "$MERGED_BLOCKS_STORE_URL" \
                 --data-dir /fh-data 
           resources:
             limits:

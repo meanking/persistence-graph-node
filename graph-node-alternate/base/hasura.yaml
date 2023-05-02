@@ -44,7 +44,7 @@ spec:
           env:
             - name: HASURA_GRAPHQL_DATABASE_URL
               valueFrom:
-                secretKeyRef:
+                 secretKeyRef:
                   name: postgres-secret
                   key: POSTGRES_HASURA_URL
             - name: HASURA_GRAPHQL_ENABLE_CONSOLE
@@ -52,6 +52,9 @@ spec:
             - name: HASURA_GRAPHQL_DEV_MODE
               value: 'true'
             - name: HASURA_GRAPHQL_ADMIN_SECRET
-              value: dexter$hasuraadmin
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: HASURA_GRAPHQL_ADMIN_SECRET
             - name: HASURA_GRAPHQL_UNAUTHORIZED_ROLE
               value: api-user
